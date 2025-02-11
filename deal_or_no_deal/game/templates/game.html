@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deal Or No Deal</title>
+</head>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/game.js' %}"></script>
+<body>
+    <h1>Batem Palma - Alege O Cutie</h1>
+    <div id="briefcase-container" style="display: flex; flex-wrap: wrap; width: 400px;">
+        {% for briefcase in briefcases %}
+            <button id="briefcase-{{ briefcase.number }}" 
+                    data-amount="{{ briefcase.amount }}" 
+                    data-unit="{{ briefcase.unit_measure }}"
+                    onclick="selectUserBriefcase({{ briefcase.id }}, {{briefcase.number}})" 
+                    style="width: 80px; height: 50px; margin: 5px;">
+                {{ briefcase.number }}
+            </button>
+        {% endfor %}
+    </div>
+
+    <h2 id="user_briefcase_title" style="margin-top: 20px; display: none;">Cutia Ta:</h2>
+    <div id="user_briefcase_container" style="margin-top: 10px;"></div>
+</body>
+</html>
