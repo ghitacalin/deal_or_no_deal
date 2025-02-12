@@ -1,11 +1,11 @@
-function sendSelectedBriefcase(number) {
+function sendSelectedBriefcase(id, number) {
     fetch('select-briefcase/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({ briefcase: number})
+        body: JSON.stringify({ briefcase_id: id, briefcase_number: number})
     })
     .then(response => {
         if (response.ok) {

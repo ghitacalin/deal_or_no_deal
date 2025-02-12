@@ -16,6 +16,5 @@ def home_page(request):
     random.shuffle(briefcases_data)
 
     briefcases = [{'id': briefcases_data[i]['id'], 'number': i + 1, 'amount': briefcases_data[i]['amount'], 'unit_measure': briefcases_data[i]['unit_measure']} for i in range(len(briefcases_data))]
-    print(briefcases)
     
     return render(request, 'game.html', {'briefcases': briefcases})

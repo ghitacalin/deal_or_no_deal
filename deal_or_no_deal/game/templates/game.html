@@ -10,13 +10,13 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/game.js' %}"></script>
 <body>
-    <h1>Batem Palma - Alege O Cutie</h1>
+    <h1 id="game_round_title">Batem Palma - Alege O Cutie</h1>
     <div id="briefcase-container" style="display: flex; flex-wrap: wrap; width: 400px;">
         {% for briefcase in briefcases %}
             <button id="briefcase-{{ briefcase.number }}" 
                     data-amount="{{ briefcase.amount }}" 
                     data-unit="{{ briefcase.unit_measure }}"
-                    onclick="selectUserBriefcase({{ briefcase.id }}, {{briefcase.number}})" 
+                    onclick="userBriefcase === null ? selectUserBriefcase({{ briefcase.id }}, {{briefcase.number}}) : openBriefcase({{ briefcase.id }}, {{ briefcase.number }})" 
                     style="width: 80px; height: 50px; margin: 5px;">
                 {{ briefcase.number }}
             </button>
