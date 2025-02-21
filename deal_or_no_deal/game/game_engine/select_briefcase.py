@@ -5,7 +5,19 @@ import json
 
 game_progress = {
     'user_briefcase': None,
-    "opened_briefcases": []
+    "opened_briefcases": [],
+    'game_briefcases': [],
+    'rounds': {
+        1: 6,
+        2: 4,
+        3: 3,
+        4: 3,
+        5: 3,
+        6: 2,
+        7: 1,
+    },
+    'current_round': None,
+    'opened_count': 0
 }
 
 
@@ -22,7 +34,12 @@ def select_briefcase(request):
                     'id': briefcase_id,
                     'number': briefcase_number
                 }
-                return JsonResponse({'message': f'Ai selectat cutia {briefcase_number} ca fiind a ta'})
+                game_progress['current_round'] = 1
+                return JsonResponse({
+                    'message': f'Ai selectat cutia {briefcase_number} ca fiind a ta',
+                    "current_round": game_progress['current_round'],
+                    'boxes_to_open': game_progress['rounds'][1]
+                })
             
             if briefcase_id in game_progress['opened_briefcases']:
                 return JsonResponse({"error": "Aceasta cutie a fost deja deschisa."}, status=400)
@@ -42,10 +59,23 @@ def select_briefcase(request):
                             "unit_measure": unit_measure
                         })
 
+                        game_progress['opened_count'] +=1
+                        if game_progress['opened_count'] >= game_progress['rounds'][game_progress['current_round']]:
+                            game_progress['current_round'] +=1
+                            game_progress['opened_count'] = 0
+
+                        for i, briefcase in enumerate(game_progress['game_briefcases']):
+                            if briefcase['id'] == briefcase_id:
+                                game_progress['game_briefcases'].pop(i)
+                                break
+
                         return JsonResponse({
                             "message": f"Ai deschis cutia {briefcase_number}",
                             "amount": amount,
-                            "unit_measure": unit_measure
+                            "unit_measure": unit_measure,
+                            'remaining_briefcases': game_progress['game_briefcases'],
+                            "current_round": game_progress['current_round'],
+                            "opened_count": game_progress['opened_count'],
                         })
                     else:
                         return JsonResponse({"error": "ID-ul cutiei nu există în baza de date!"}, status=400)

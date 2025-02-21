@@ -16,6 +16,10 @@ function sendSelectedBriefcase(id, number) {
     })
     .then(data => {
         console.log("Raspuns backend:", data);
+        if (data.current_round) {
+            console.log("Runda primită:", data.current_round);
+            document.getElementById('game_round_title').textContent = `Runda ${data.current_round} - 0/${data.boxes_to_open} Cutii Deschise`
+        }
     })
     .catch(error => {
         console.error("Eroare:", error);

@@ -39,6 +39,7 @@ function openBriefcase(id, number) {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Răspuns backend:", data);
             if (data.error) {
                 alert(data.error);
                 return;

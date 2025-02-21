@@ -10,7 +10,7 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/game.js' %}"></script>
 <body>
-    <h1 id="game_round_title">Batem Palma - Alege O Cutie</h1>
+    <h1 id="game_round_title">Batem Palma - Jucatorul Alege Propria Cutie</h1>
     <div id="briefcase-container" style="display: flex; flex-wrap: wrap; width: 400px;">
         {% for briefcase in briefcases %}
             <button id="briefcase-{{ briefcase.number }}" 
