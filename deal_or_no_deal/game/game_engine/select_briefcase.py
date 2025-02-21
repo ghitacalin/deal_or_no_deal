@@ -15,6 +15,7 @@ game_progress = {
         5: 3,
         6: 2,
         7: 1,
+        8: None
     },
     'current_round': None,
     'opened_count': 0
@@ -60,23 +61,34 @@ def select_briefcase(request):
                         })
 
                         game_progress['opened_count'] +=1
-                        if game_progress['opened_count'] >= game_progress['rounds'][game_progress['current_round']]:
-                            game_progress['current_round'] +=1
-                            game_progress['opened_count'] = 0
-
+                        
                         for i, briefcase in enumerate(game_progress['game_briefcases']):
                             if briefcase['id'] == briefcase_id:
                                 game_progress['game_briefcases'].pop(i)
                                 break
 
-                        return JsonResponse({
-                            "message": f"Ai deschis cutia {briefcase_number}",
-                            "amount": amount,
-                            "unit_measure": unit_measure,
+                        response_data = {
+                            'message': f"Ai deschis cutia {briefcase_number}",
+                            'amount': amount,
+                            'unit_measure': unit_measure,
                             'remaining_briefcases': game_progress['game_briefcases'],
-                            "current_round": game_progress['current_round'],
-                            "opened_count": game_progress['opened_count'],
-                        })
+                            'current_round': game_progress['current_round'],
+                            'opened_count': game_progress['opened_count'],
+                            'boxes_to_open': game_progress['rounds'][game_progress['current_round']]
+                        }
+
+                        if game_progress['opened_count'] >= game_progress['rounds'][game_progress['current_round']]:
+                            game_progress['current_round'] +=1
+                            game_progress['opened_count'] = 0
+
+                            offer_value = 1000
+
+                            response_data['message'] = f"Oferta Băncii: {offer_value} RON"
+                            response_data['bank_offer'] = offer_value
+
+                            return JsonResponse(response_data)
+
+                        return JsonResponse(response_data)
                     else:
                         return JsonResponse({"error": "ID-ul cutiei nu există în baza de date!"}, status=400)
 

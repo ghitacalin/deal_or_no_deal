@@ -53,9 +53,78 @@ function openBriefcase(id, number) {
             } else {
                 console.error(`Eroare: Butonul briefcase-${number} nu a fost găsit.`);
             }
+
+            let roundTitle = document.getElementById('game_round_title');
+            if (roundTitle) {
+                if (data.current_round < 8) {
+                    roundTitle.textContent = `Runda ${data.current_round} - ${data.opened_count}/${data.boxes_to_open} Cutii Deschise`
+                } else {
+                    roundTitle.textContent = 'Runda Finala - Jucatorul Va Confirma Oferta Bancii Sau Va Ramane Cu Valoarea Din Cutia Proprie'
+                }
+            }
+
+            if (data.bank_offer) {
+                showBankOffer(data.bank_offer);
+            }
+
         })
         .catch(error => console.error("Eroare:", error));
     } else {
         alert('Mai întâi selectează-ți propria cutie');
+    }
+}
+
+function showBankOffer(offer) {
+    let overlay = document.createElement("div");
+    overlay.id = "overlay";
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "rgba(0,0,0,0.5)";
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    document.body.appendChild(overlay);
+
+    let modal = document.createElement("div");
+    modal.id = "offerModal";
+    modal.style.backgroundColor = "white";
+    modal.style.padding = "20px";
+    modal.style.borderRadius = "10px";
+    modal.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
+    modal.style.textAlign = "center";
+
+    let message = document.createElement("p");
+    message.innerText = `Banca iti ofera: ${offer} RON`;
+
+    let acceptBtn = document.createElement("button");
+    acceptBtn.innerText = "Accepta";
+    acceptBtn.style.margin = "10px";
+    acceptBtn.onclick = function() {
+        endGame(offer);
+    };
+
+    let rejectBtn = document.createElement('button');
+    rejectBtn.innerText = "Refuza";
+    rejectBtn.style.margin = "10px";
+    rejectBtn.onclick = function() {
+        document.body.removeChild(overlay);
+    };
+
+    modal.appendChild(message)
+    modal.appendChild(acceptBtn)
+    modal.appendChild(rejectBtn)
+    overlay.appendChild(modal);
+}
+
+function endGame(offer) {
+    document.getElementById("game_round_title").textContent = `Jocul s-a terminat! Ai câștigat ${offer} RON!`
+    document.querySelectorAll("button").forEach(btn=>btn.disabled = true);
+
+    let overlay = document.getElementById("overlay");
+    if (overlay) {
+        document.body.removeChild(overlay);
     }
 }
