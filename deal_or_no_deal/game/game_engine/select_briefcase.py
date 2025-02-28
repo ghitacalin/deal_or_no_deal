@@ -82,7 +82,10 @@ def select_briefcase(request):
                             game_progress['opened_count'] = 0
 
                             offer_value = 1000
-
+                            
+                            response_data['current_round'] = game_progress['current_round']
+                            response_data['opened_count'] = 0
+                            response_data['boxes_to_open'] = game_progress['rounds'][game_progress['current_round']]
                             response_data['message'] = f"Oferta Băncii: {offer_value} RON"
                             response_data['bank_offer'] = offer_value
 

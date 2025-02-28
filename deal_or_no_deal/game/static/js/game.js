@@ -58,15 +58,12 @@ function openBriefcase(id, number) {
             if (roundTitle) {
                 if (data.current_round < 8) {
                     roundTitle.textContent = `Runda ${data.current_round} - ${data.opened_count}/${data.boxes_to_open} Cutii Deschise`
-                } else {
-                    roundTitle.textContent = 'Runda Finala - Jucatorul Va Confirma Oferta Bancii Sau Va Ramane Cu Valoarea Din Cutia Proprie'
                 }
             }
 
             if (data.bank_offer) {
-                showBankOffer(data.bank_offer);
+                showBankOffer(data);
             }
-
         })
         .catch(error => console.error("Eroare:", error));
     } else {
@@ -74,7 +71,17 @@ function openBriefcase(id, number) {
     }
 }
 
-function showBankOffer(offer) {
+function showBankOffer(data) {
+    let roundTitle = document.getElementById('game_round_title');
+
+    if (roundTitle) {
+        if (data.current_round < 8) {
+            roundTitle.textContent = "Se așteaptă decizia jucătorului";
+        } else {
+            roundTitle.textContent = "Runda Finala - Jucatorul Va Confirma Oferta Bancii Sau Va Ramane Cu Valoarea Din Cutia Proprie";
+        }
+    }
+
     let overlay = document.createElement("div");
     overlay.id = "overlay";
     overlay.style.position = "fixed";
@@ -97,13 +104,13 @@ function showBankOffer(offer) {
     modal.style.textAlign = "center";
 
     let message = document.createElement("p");
-    message.innerText = `Banca iti ofera: ${offer} RON`;
+    message.innerText = `Banca iti ofera: ${data.bank_offer} RON`;
 
     let acceptBtn = document.createElement("button");
     acceptBtn.innerText = "Accepta";
     acceptBtn.style.margin = "10px";
     acceptBtn.onclick = function() {
-        endGame(offer);
+        endGame(data.bank_offer);
     };
 
     let rejectBtn = document.createElement('button');
@@ -111,6 +118,32 @@ function showBankOffer(offer) {
     rejectBtn.style.margin = "10px";
     rejectBtn.onclick = function() {
         document.body.removeChild(overlay);
+        
+        if (roundTitle) {
+            if (data.current_round < 8) {
+                roundTitle.textContent = `Runda ${data.current_round} - ${data.opened_count}/${data.boxes_to_open} Cutii Deschise`;
+            } else {
+                let userBriefcaseContainer = document.getElementById("user_briefcase_container");
+                let briefcaseContainer = document.getElementById("briefcase-container");
+                
+                if (userBriefcaseContainer) {
+                    let userBriefcaseButton = userBriefcaseContainer.querySelector('button');
+
+                    if (userBriefcaseButton) {
+                        userBriefcaseButton.innerText = `${data.amount} ${data.unit_measure}`;
+                        roundTitle.textContent = `Jocul s-a terminat! Ai câștigat ${data.amount} RON!`
+
+                        if (briefcaseContainer) {
+                            let lastBriefcaseButton = briefcaseContainer.querySelector("button[disabled]");
+
+                            if (lastBriefcaseButton) {
+                                lastBriefcaseButton.innerText = `${data.amount} ${data.unit_measure}`;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     };
 
     modal.appendChild(message)
